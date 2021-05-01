@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*-
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
@@ -34,7 +36,7 @@ def jaga():
         passlist.append(pass1)
     i = 0
     #save as namelist, birlist, passlist
-    browser = webdriver.Chrome()
+    browser = webdriver.Chrome('/home/pi/jaga/chromedriver')
 
     #random user pick
     for k in range(len(namelist)):
@@ -104,7 +106,7 @@ def jaga():
             print(namelist[t] + " 자가진단 본인이 완료" + str(i))
     print("자가진단 완료"+ str(nowtime1))
     browser.close()
-schedule.every().day.at('07:00').do(jaga)
+schedule.every().day.at('12:40').do(jaga)
 while True:
     nowtime1 = time.strftime('%H%M%S')
     schedule.run_pending()

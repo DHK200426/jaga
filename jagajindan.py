@@ -25,7 +25,7 @@ def jaga():
         passlist.append(pass1)
     i = 0
     #save as namelist, birlist, passlist
-    browser = webdriver.Chrome()
+    browser = webdriver.Chrome("/home/pi/Desktop/chromedriver.exe")
     
     while i <= len(namelist) - 1:
         browser.get("https://hcs.eduro.go.kr/#/loginHome")

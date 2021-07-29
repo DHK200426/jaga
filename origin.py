@@ -11,6 +11,12 @@ from pytz import timezone
 import pytz
 from random import * 
 from openpyxl import load_workbook
+from selenium.webdriver.chrome.options import Options
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+options.add_argument('--no-sandbox')
+options.add_argument("--disable-dev-shm-usage")
 #made by 1301 all rights reserve
 #use selenium, openpyxl
 
@@ -36,7 +42,7 @@ def jaga():
         passlist.append(pass1)
     i = 0
     #save as namelist, birlist, passlist
-    browser = webdriver.Chrome('/home/pi/jaga/chromedriver')
+    browser = webdriver.Chrome(executable_path='/usr/lib/chromium-browser/chromedriver', options=options)
 
     #random user pick
     for k in range(len(namelist)):
@@ -44,6 +50,7 @@ def jaga():
             while a in list:
                 a =randint(0,len(namelist)-1)
             list.append(a)
+    print(list)
 
     while i <= len(namelist) - 1:
         #random timedealy each person
@@ -51,7 +58,7 @@ def jaga():
         timedealy = randint(10,30)
 
         browser.get("https://hcs.eduro.go.kr/#/loginHome")
-        time.sleep(2)
+        time.sleep(3)
         #school select
         browser.delete_all_cookies()
         browser.find_element_by_id("btnConfirm2").click()
@@ -59,55 +66,57 @@ def jaga():
         Select(browser.find_element_by_id("sidolabel")).select_by_value("03")
         Select(browser.find_element_by_id("crseScCode")).select_by_value("4")
         scb = browser.find_element_by_id("orgname")
-        time.sleep(0.5)
+        time.sleep(4)
         scb.send_keys("대구일과학고등학교")
         scb.send_keys(Keys.RETURN)
-        time.sleep(1.4)
+        time.sleep(4)
         #user input
         browser.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a').click()
         browser.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[2]/input').click()
         browser.find_element_by_xpath('//*[@id="user_name_input"]').send_keys(namelist[t])
         browser.find_element_by_xpath('//*[@id="birthday_input"]').send_keys(birlist[t])
-        time.sleep(0.8)
+        time.sleep(5)
         browser.find_element_by_xpath('//*[@id="btnConfirm"]').click() 
-        time.sleep(2)
+        time.sleep(5)
         browser.find_element_by_xpath('//*[@id="WriteInfoForm"]/table/tbody/tr/td/input').send_keys(passlist[t])
         browser.find_element_by_xpath('//*[@id="btnConfirm"]').click()
-        time.sleep(3)
-        browser.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul/li[1]/a/span[1]').click()
-        time.sleep(2)
-        try:
-            #servay input
-            browser.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
-            browser.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
-            browser.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
-            time.sleep(1)
-            browser.find_element_by_xpath('//*[@id="btnConfirm"]').click()
+        time.sleep(8)
+
+        CheckPoint = browser.find_element_by_id('//*[@id="container"]/div/section[2]/div[2]/ul/li')
+
+        if 'active' not in CheckPoint.get_attribute('class'):
+            time.sleep(4)
             browser.find_element_by_xpath('//*[@id="topMenuBtn"]').click()
-            time.sleep(1)
+            time.sleep(4)
             browser.find_element_by_xpath('//*[@id="topMenuWrap"]/ul/li[4]/button').click()
             Alert(browser).accept()
-            time.sleep(1)
-            browser.find_element_by_xpath('/html/body/app-root/div/div[1]/div/button').click()
-            Alert(browser).accept()
-            i = i + 1
-            print(namelist[t] + " 자가진단 완료" + str(timedealy) + " " + str(i))
-            time.sleep(timedealy)
-        except:
-            time.sleep(1)
-            browser.find_element_by_xpath('//*[@id="topMenuBtn"]').click()
-            time.sleep(1)
-            browser.find_element_by_xpath('//*[@id="topMenuWrap"]/ul/li[4]/button').click()
-            Alert(browser).accept()
-            time.sleep(1)
+            time.sleep(4)
             browser.find_element_by_xpath('/html/body/app-root/div/div[1]/div/button').click()
             Alert(browser).accept()
             i = i + 1
             print(namelist[t] + " 자가진단 본인이 완료" + str(i))
-    print("자가진단 완료"+ str(nowtime1))
+        
+        browser.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul/li[1]/a/span[1]').click()
+        time.sleep(5)
+        browser.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
+        browser.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
+        browser.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
+        time.sleep(4)
+        browser.find_element_by_xpath('//*[@id="btnConfirm"]').click()
+        browser.find_element_by_xpath('//*[@id="topMenuBtn"]').click()
+        time.sleep(4)
+        browser.find_element_by_xpath('//*[@id="topMenuWrap"]/ul/li[4]/button').click()
+        Alert(browser).accept()
+        time.sleep(4)
+        browser.find_element_by_xpath('/html/body/app-root/div/div[1]/div/button').click()
+        Alert(browser).accept()
+        i = i + 1
+        print(namelist[t] + " 자가진단 완료" + str(timedealy) + " " + str(i))
+        time.sleep(timedealy)
+    print("자가진단 완료"+ str(nowDay))
     browser.close()
-schedule.every().day.at('12:40').do(jaga)
+schedule.every().day.at('08:13').do(jaga)
 while True:
-    nowtime1 = time.strftime('%H%M%S')
+    nowDay = time.strftime('%D')
     schedule.run_pending()
     time.sleep(1)

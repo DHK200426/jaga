@@ -5,6 +5,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
 from openpyxl import load_workbook
 import time
+from selenium.webdriver.chrome.options import Options
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+options.add_argument('--no-sandbox')
+options.add_argument("--disable-dev-shm-usage")
 #made by 1301 all rights reserved
 #use selenium, openpyxl
 def jaga():
@@ -25,7 +31,7 @@ def jaga():
         passlist.append(pass1)
     i = 0
     #save as namelist, birlist, passlist
-    browser = webdriver.Chrome("/home/pi/Desktop/chromedriver.exe")
+    browser = webdriver.Chrome(executable_path='/usr/lib/chromium-browser/chromedriver', options=options)
     
     while i <= len(namelist) - 1:
         browser.get("https://hcs.eduro.go.kr/#/loginHome")

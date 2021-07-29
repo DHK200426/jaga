@@ -115,7 +115,7 @@ def jaga():
         time.sleep(timedealy)
     print("자가진단 완료"+ str(nowDay))
     browser.close()
-schedule.every().day.at('08:20').do(jaga)
+schedule.every().day.at('06:55').do(jaga)
 while True:
     nowDay = time.strftime('%D')
     schedule.run_pending()

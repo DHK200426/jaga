@@ -43,7 +43,7 @@ def jaga():
         passlist.append(pass1)
     i = 0
     #save as namelist, birlist, passlist
-    browser = webdriver.Chrome('./chromedriver', options=options)
+    browser = webdriver.Chrome('./chromedriver.exe',options = options)
     browser.implicitly_wait(15)
 
     #random user pick
@@ -71,8 +71,6 @@ def jaga():
         scb = browser.find_element_by_id("orgname")
         scb.send_keys("대구일과학고등학교")
         scb.send_keys(Keys.RETURN)
-        kk = browser.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a')
-        kk.click()
         #user input
         browser.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a').click()
         browser.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[2]/input').click()
@@ -95,6 +93,7 @@ def jaga():
                 checkkey = browser.find_element_by_xpath(tar)
                 if '빈칸' in checkkey.get_attribute('aria-label'):
                     emptylist.remove((j,k))
+
         for s in passlist1:
             (j,k) = emptylist[s]
             if k ==0:
@@ -123,7 +122,6 @@ def jaga():
             browser.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
             browser.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
             browser.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
-            browser.find_element_by_xpath('//*[@id="survey_q4a1"]').click()
             browser.find_element_by_xpath('//*[@id="btnConfirm"]').click()
             browser.find_element_by_xpath('//*[@id="topMenuBtn"]').click()
             browser.find_element_by_xpath('//*[@id="topMenuWrap"]/ul/li[4]/button').click()
@@ -135,7 +133,7 @@ def jaga():
             time.sleep(timedealy)
     print("자가진단 완료"+ str(nowDay))
     browser.close()
-schedule.every().day.at('06:55').do(jaga)
+schedule.every().day.at('12:34').do(jaga)
 while True:
     nowDay = time.strftime('%D')
     schedule.run_pending()

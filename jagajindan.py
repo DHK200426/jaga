@@ -11,12 +11,6 @@ from pytz import timezone
 import pytz
 from random import * 
 from openpyxl import load_workbook
-from selenium.webdriver.chrome.options import Options
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
-options.add_argument('--no-sandbox')
-options.add_argument("--disable-dev-shm-usage")
 #made by 1301 all rights reserve
 #use selenium, openpyxl
 
@@ -42,7 +36,7 @@ def jaga():
         passlist.append(pass1)
     i = 0
     #save as namelist, birlist, passlist
-    browser = webdriver.Chrome('./chromedriver.exe', options=options)
+    browser = webdriver.Chrome('./chromedriver.exe')
 
     #random user pick
     for k in range(len(namelist)):
@@ -55,12 +49,13 @@ def jaga():
     while i <= len(namelist) - 1:
         #random timedealy each person
         t = list1[i]
-        timedealy = randint(10,30)
-        passlist = list(map(int,' '.join(str(passlist[t])).split()))
+        passlist1 = []
+        emptylist = []
+        passlist1 = [int(i) for i in ' '.join(passlist[t]).split()]
         emptylist = [(4,0),(5,1),(5,2),(5,3),(5,4),(6,0),(7,0),(8,1),(8,2),(8,3),(8,4),(9,0)]
 
         browser.get("https://hcs.eduro.go.kr/#/loginHome")
-        time.sleep(3)
+        time.sleep(4)
         #school select
         browser.delete_all_cookies()
         browser.find_element_by_id("btnConfirm2").click()
@@ -68,77 +63,81 @@ def jaga():
         Select(browser.find_element_by_id("sidolabel")).select_by_value("03")
         Select(browser.find_element_by_id("crseScCode")).select_by_value("4")
         scb = browser.find_element_by_id("orgname")
-        time.sleep(3)
+        time.sleep(4)
         scb.send_keys("대구일과학고등학교")
         scb.send_keys(Keys.RETURN)
+        time.sleep(1)
+        kk = browser.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a')
+        kk.click()
         time.sleep(3)
-        #user input
-        browser.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a').click()
+        #user inputk()
         browser.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[2]/input').click()
         browser.find_element_by_xpath('//*[@id="user_name_input"]').send_keys(namelist[t])
+        browser.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a').click()
         browser.find_element_by_xpath('//*[@id="birthday_input"]').send_keys(birlist[t])
+        time.sleep(1)
         browser.find_element_by_xpath('//*[@id="btnConfirm"]').click() 
-        time.sleep(3)
+        time.sleep(2)
         browser.find_element_by_xpath('//*[@id="password"]').click()
         time.sleep(3)
-
         for j in range(4,10):
             if j == 5 or j == 8:
                 k = 1
                 for k in range(1,5):
-                    tar = '//*[@id="password_mainDiv"]/div['+str(j) + ']/div[' + str(k) + ']'
+                    tar = '//*[@id="password_mainDiv"]/div['+str(j) + ']/a[' + str(k) + ']'
                     checkkey = browser.find_element_by_xpath(tar)
                     if '빈칸' in checkkey.get_attribute('aria-label'):
                         emptylist.remove((j,k))
             else:
                 k = 0
-                tar = '//*[@id="password_mainDiv"]/div['+str(j) + ']/div'
+                tar = '//*[@id="password_mainDiv"]/div['+str(j) + ']/a'
                 checkkey = browser.find_element_by_xpath(tar)
                 if '빈칸' in checkkey.get_attribute('aria-label'):
                     emptylist.remove((j,k))
-
-        for s in passlist:
+        time.sleep(2)
+        for s in passlist1:
             (j,k) = emptylist[s]
             if k ==0:
-                tar = '//*[@id="password_mainDiv"]/div['+str(j) + ']/div'
+                tar = '//*[@id="password_mainDiv"]/div['+str(j) + ']/a'
                 browser.find_element_by_xpath(tar).click()
+                time.sleep(1)
             else:
-                tar = '//*[@id="password_mainDiv"]/div['+str(j) + ']/div[' + str(k) + ']'
+                tar = '//*[@id="password_mainDiv"]/div['+str(j) + ']/a[' + str(k) + ']'
                 browser.find_element_by_xpath(tar).click()
-
+                time.sleep(1)
         browser.find_element_by_xpath('//*[@id="btnConfirm"]').click()
-        time.sleep(8)
+        time.sleep(3)
 
         CheckPoint = browser.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul/li')
 
-        if 'active' not in CheckPoint.get_attribute('class'):
-            time.sleep(4)
+        if 'active' in CheckPoint.get_attribute('class'):
+            time.sleep(2)
             browser.find_element_by_xpath('//*[@id="topMenuBtn"]').click()
-            time.sleep(4)
+            time.sleep(2)
             browser.find_element_by_xpath('//*[@id="topMenuWrap"]/ul/li[4]/button').click()
             Alert(browser).accept()
-            time.sleep(4)
+            time.sleep(2)
             browser.find_element_by_xpath('/html/body/app-root/div/div[1]/div/button').click()
             Alert(browser).accept()
             i = i + 1
             print(namelist[t] + " 자가진단 본인이 완료" + str(i))
         
-        browser.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul/li[1]/a/span[1]').click()
-        time.sleep(5)
-        browser.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
-        browser.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
-        browser.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
-        time.sleep(4)
-        browser.find_element_by_xpath('//*[@id="btnConfirm"]').click()
-        browser.find_element_by_xpath('//*[@id="topMenuBtn"]').click()
-        time.sleep(4)
-        browser.find_element_by_xpath('//*[@id="topMenuWrap"]/ul/li[4]/button').click()
-        Alert(browser).accept()
-        time.sleep(4)
-        browser.find_element_by_xpath('/html/body/app-root/div/div[1]/div/button').click()
-        Alert(browser).accept()
-        i = i + 1
-        print(namelist[t] + " 자가진단 완료" + str(timedealy) + " " + str(i))
-        time.sleep(timedealy)
+        else:
+            browser.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul/li[1]/a/span[1]').click()
+            time.sleep(2)
+            browser.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
+            browser.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
+            browser.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
+            time.sleep(2)
+            browser.find_element_by_xpath('//*[@id="btnConfirm"]').click()
+            browser.find_element_by_xpath('//*[@id="topMenuBtn"]').click()
+            time.sleep(2)
+            browser.find_element_by_xpath('//*[@id="topMenuWrap"]/ul/li[4]/button').click()
+            Alert(browser).accept()
+            time.sleep(2)
+            browser.find_element_by_xpath('/html/body/app-root/div/div[1]/div/button').click()
+            Alert(browser).accept()
+            i = i + 1
+            print(namelist[t] + " 자가진단 완료" + str(i))
     browser.close()
 jaga()

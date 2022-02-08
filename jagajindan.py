@@ -90,7 +90,6 @@ def jaga():
                 checkkey = browser.find_element_by_xpath(tar)
                 if '빈칸' in checkkey.get_attribute('aria-label'):
                     emptylist.remove((j,k))
-            time.sleep(1)
         for s in passlist1:
             (j,k) = emptylist[s]
             if k ==0:
@@ -99,7 +98,6 @@ def jaga():
             else:
                 tar = '//*[@id="password_mainDiv"]/div['+str(j) + ']/a[' + str(k) + ']'
                 browser.find_element_by_xpath(tar).click()
-            time.sleep(1)
         browser.find_element_by_xpath('//*[@id="btnConfirm"]').click()
 
         try:

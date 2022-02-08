@@ -40,7 +40,7 @@ def jaga():
         passlist.append(pass1)
     i = 0
     #save as namelist, birlist, passlist
-    browser = webdriver.Chrome('./chromedriver.exe',options = options)
+    browser = webdriver.Chrome(executable_path='/usr/lib/chromium-browser/chromedriver',options = options)
     browser.implicitly_wait(15)
 
     #random user pick
